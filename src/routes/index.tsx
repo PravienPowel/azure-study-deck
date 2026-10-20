@@ -17,21 +17,22 @@ export const Route = createFileRoute("/")({
 });
 
 const names = Object.keys(CATEGORIES);
+const first = names[0]!;
 
 function Index() {
-  const [cat, setCat] = useState(names[0]);
-  const [deck, setDeck] = useState<Card[]>(CATEGORIES[names[0]]);
+  const [cat, setCat] = useState(first);
+  const [deck, setDeck] = useState<Card[]>(CATEGORIES[first]!);
   const [i, setI] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
   const go = (n: number) => { setFlipped(false); setTimeout(() => setI(n), flipped ? 150 : 0); };
-  const pick = (c: string) => { setCat(c); setDeck(CATEGORIES[c]); setI(0); setFlipped(false); };
+  const pick = (c: string) => { setCat(c); setDeck(CATEGORIES[c] ?? []); setI(0); setFlipped(false); };
   const shuffle = () => {
     const d = [...deck];
-    for (let k = d.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [d[k], d[j]] = [d[j], d[k]]; }
+    for (let k = d.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); const t = d[k]!; d[k] = d[j]!; d[j] = t; }
     setFlipped(false); setDeck(d); setI(0);
   };
-  const card = deck[i];
+  const card = deck[i] ?? deck[0]!;
 
   return (
     <div className="flex min-h-screen flex-col bg-hero text-foreground">
